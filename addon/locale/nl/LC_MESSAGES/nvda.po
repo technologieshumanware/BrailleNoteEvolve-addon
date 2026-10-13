@@ -1,6 +1,6 @@
 # UNTRANSLATED STRINGS FOR NVDA ADDON
 # Language: nl
-# Generated: 2026-04-21 10:55:04
+# Generated: 2026-03-24 11:45:48
 #
 # Please translate the msgstr lines and use import-translations.py
 # to merge them back into the main .po file.
@@ -14,19 +14,9 @@ msgstr ""
 "Language-Team: \n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 3.4.2\n"
-
-#. Translators: label to inform user that BrailleNoteEvolve addon could not be loaded correctly
-#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:73
-msgid "BrailleNote evolve Add-on could not be loaded correctly."
-msgstr "De BrailleNote evolve-add-on kon niet correct worden geladen."
-
-#. Translators: dialog title when announcing an error for BrailleNoteEvolve addon
-#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:75
-msgid "BrailleNote evolve Error"
-msgstr "BrailleNote evolve-fout"
 
 #. Translators: Label for a checkbox to toggle whether the braille display cursor is shown
 #. The "&" indicates that the next character is a keyboard accelerator
@@ -66,7 +56,7 @@ msgstr "Computerbraille"
 #. Translators: Label for a dropdown to select the computer braille translator to use for the current language profile
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:199
 msgid "Computer Braille Translator:"
-msgstr "Computer-braillevertaler:"
+msgstr "Computer-brailletabel:"
 
 #. Translators: Title of the Configure Language Profile dialog
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:64
@@ -96,10 +86,12 @@ msgstr "FR"
 
 #. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 #: ..\braillenoteevolve\buildVars.py:26
-msgid "Integrates HumanWare BrailleNote evolve with NVDA, providing language "
+msgid ""
+"Integrates HumanWare BrailleNote evolve with NVDA, providing language "
 "profile management, braille and keyboard settings, and communication with "
 "the Keysoft Control Center."
-msgstr "Integreert de HumanWare BrailleNote evolve met NVDA, waarbij "
+msgstr ""
+"Integreert de HumanWare BrailleNote evolve met NVDA, waarbij "
 "taalprofielbeheer, braille- en toetsenbordinstellingen en communicatie met "
 "het Keysoft Control Center worden geboden."
 
@@ -111,12 +103,12 @@ msgstr "Toetsenbordinstellingen"
 #. Translators: Grade type choice for Literary Braille
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:35
 msgid "Literary Braille"
-msgstr "Literaire braille"
+msgstr "Literair braille"
 
 #. Translators: Label for a dropdown to select the literary braille translator to use for the current language profile
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:216
 msgid "Literary Braille Translator:"
-msgstr "Literaire Braille-vertaler:"
+msgstr "Literaire Brailletabel:"
 
 #. Translators: Title of the Manage Language Profiles dialog
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:873
@@ -147,12 +139,12 @@ msgstr "Toonhoogte:"
 #. Translators: Label for a dropdown to select the preferred braille grade for display in the current language profile
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:191
 msgid "Preferred Braille Grade for Display:"
-msgstr "Voorkeur voor Braillenaudite bij weergave:"
+msgstr "Voorkeursbrailleschrift voor uitvoer:"
 
 #. Translators: Label for a dropdown to select the preferred braille grade for entry in the current language profile
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:184
 msgid "Preferred Braille Grade for Entry:"
-msgstr "Voorkeursgraad braille voor invoer:"
+msgstr "Voorkeursbrailleschrift voor invoer:"
 
 #. Translators: Label for a dropdown to select the preferred braille code for math for the current language profile
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:229
@@ -179,13 +171,13 @@ msgstr "Berichten weergeven"
 #. The "&" indicates that the next character is a keyboard accelerator
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:83
 msgid "Show se&lection"
-msgstr "Selectie weergeven"
+msgstr "Se&lectie weergeven"
 
 #. Translators: Label for a checkbox to toggle whether NVDA should speak command keys
 #. The "&" indicates that the next character is a keyboard accelerator
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_keyboardSettingsDialog.py:50
 msgid "Speak c&ommand keys"
-msgstr "Commando-toetsen uitspreken"
+msgstr "C&ommando-toetsen uitspreken"
 
 #. Translators: Label for a dropdown to select whether NVDA should speak typed characters
 #. The "&" indicates that the next character is a keyboard accelerator
@@ -224,3 +216,13 @@ msgstr "Variant:"
 #: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:148
 msgid "Voice:"
 msgstr "Stem:"
+
+#. Translators: label to inform user that BrailleNoteEvolve addon could not be loaded correctly
+#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:73
+msgid "BrailleNote evolve Add-on could not be loaded correctly."
+msgstr "De BrailleNote evolve-add-on kon niet correct worden geladen."
+
+#. Translators: dialog title when announcing an error for BrailleNoteEvolve addon
+#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:75
+msgid "BrailleNote evolve Error"
+msgstr "BrailleNote evolve-fout"

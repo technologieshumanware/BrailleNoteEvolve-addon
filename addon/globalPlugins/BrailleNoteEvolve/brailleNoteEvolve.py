@@ -17,8 +17,17 @@ import addonHandler
 from core import postNvdaStartup
 from gui.message import MessageDialog, DialogType
 import globalPluginHandler
+import config
 
 addonHandler.initTranslation()
+
+# Configuration specification for BrailleNote Evolve addon
+confspec = {
+	"startupProfile": 'string(default="")',
+}
+
+# Initialize addon configuration
+config.conf.spec["braillenoteevolve"] = confspec
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	"""
@@ -32,8 +41,15 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 
-		postNvdaStartup.register(self._checkInitFailed)
+		# True once _restoreStartupProfile has run via postNvdaStartup.
+		# Prevents _saveStartupProfile from clobbering the saved profile
+		# when NVDA is launched in a silent/headless mode (e.g. --install-addon-silent
+		# during a Control Center update), which exits before postNvdaStartup fires.
+		self._startupCompleted = False
 
+		postNvdaStartup.register(self._checkInitFailed)
+		postNvdaStartup.register(self._restoreStartupProfile)
+	
 		# Initialize Keysoft Options Menu handler
 		try:
 			from .keysoftOptionsMenuNamedPipe import KeysoftOptionsMenuHandler
@@ -82,6 +98,43 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			)
 			dialog.Show()
 
+	def _restoreStartupProfile(self):
+		"""Restore the saved startup profile if one was configured."""
+		try:
+			# Get the Startup Profile from the base profile config
+			baseProfile = config.conf.profiles[0]			
+			
+			if "braillenoteevolve" not in baseProfile:
+				baseProfile["braillenoteevolve"] = {}
+				
+			startupProfile = baseProfile["braillenoteevolve"]["startupProfile"]
+			if startupProfile: 
+				log.debug(f"brailleNoteEvolve: Restoring startup profile: {startupProfile}")
+			
+				if startupProfile in config.conf.listProfiles():
+					config.conf.manualActivateProfile(startupProfile)
+					log.info(f"brailleNoteEvolve: Successfully activated startup profile: {startupProfile}")
+				else:
+					log.warning(f"brailleNoteEvolve: Startup profile '{startupProfile}' not found, resetting to empty")
+					baseProfile["braillenoteevolve"]["startupProfile"] = ""
+					config.conf.save()
+		except Exception as e:
+			log.error(f"brailleNoteEvolve: Error restoring startup profile: {e}", exc_info=True)
+		finally:
+			# Signal terminate() that it is safe to persist the active profile.
+			self._startupCompleted = True
+			# Save the active profile immediately on every switch. Writing on
+			# switch (rather than only in terminate) ensures the value is saved
+			# before a window session ends (sign out, restart or shut down).
+			try:
+				config.post_configProfileSwitch.register(self._onProfileSwitch)
+			except Exception as e:
+				log.error(f"brailleNoteEvolve: Failed to register profile switch handler: {e}", exc_info=True)
+
+	def _onProfileSwitch(self, **kwargs):
+		"""Save the currently active profile whenever the user switches profiles."""
+		self._saveStartupProfile()
+
 	def _customHandleSecureDesktopChange(self):
 		"""
 		Custom implementation of _handleSecureDesktopChange that does everything
@@ -125,10 +178,49 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		from winAPI.secureDesktop import post_secureDesktopStateChange
 		post_secureDesktopStateChange.notify(isSecureDesktop=True)
 
+	def _saveStartupProfile(self):
+		"""
+		Save the currently active profile to the base profile config so it can be restored on next startup.
+		"""
+		# Skip when NVDA never reached postNvdaStartup (silent/headless runs
+		# such as --install-addon-silent). No profile has been restored, so
+		# saving now would overwrite the real value with an empty string.
+		if not getattr(self, "_startupCompleted", False):
+			log.info("brailleNoteEvolve: Skipping save of startup profile (silent/headless NVDA run).")
+			return
+		try:
+			profileName = None
+			if len(config.conf.profiles) > 1:
+				lastProfile = config.conf.profiles[-1]
+				if hasattr(lastProfile, 'manual') and lastProfile.manual:
+					profileName = lastProfile.name
+			
+			baseProfile = config.conf.profiles[0]
+			if "braillenoteevolve" not in baseProfile:
+				baseProfile["braillenoteevolve"] = {}
+			
+			baseProfile["braillenoteevolve"]["startupProfile"] = profileName if profileName else ""
+			config.conf.save()
+			
+			displayName = profileName if profileName else "(normal configuration)"
+			log.info(f"brailleNoteEvolve: Saved startup profile: {displayName}")
+		except Exception as e:
+			log.error(f"brailleNoteEvolve: Error saving startup profile: {e}", exc_info=True)
+
 	def terminate(self):
 		"""
 		Cleanup and restore original functions when the plugin is terminated.
 		"""
+		# Save the current profile before NVDA closes
+		self._saveStartupProfile()
+		
+		# Unregister profile switch handler
+		try:
+			config.post_configProfileSwitch.unregister(self._onProfileSwitch)
+			log.debug("brailleNoteEvolve: Unregistered profile switch handler")
+		except Exception as e:
+			log.error(f"brailleNoteEvolve: Failed to unregister profile switch handler: {e}", exc_info=True)
+		
 		# Stop Braille IME Pipe Server
 		try:
 			if hasattr(self, 'brailleImePipeServer') and self.brailleImePipeServer:

@@ -8,10 +8,12 @@ from typing import Callable
 from collections import OrderedDict
 import brailleTables
 import config
+import eventHandler
 import gui
 from gui.guiHelper import BoxSizerHelper
 from gui.configProfiles import NewProfileDialog, ProfilesDialog
 from nvwave import playErrorSound
+import queueHandler
 import synthDriverHandler
 import wx
 from gui import settingsDialogs, nvdaControls
@@ -72,6 +74,9 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 	def __init__(self, *args, **kwargs):
 		log.debug("Initializing configure language profile dialog")
 
+		self.computerBrailleTranslatorChoices = []
+		self.computerBrailleTranslatorFiles = []
+  
 		current_profile_name = None
 		try:
 			if config.conf.profiles and len(config.conf.profiles) > 0:
@@ -199,11 +204,11 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 			)
 
 			# Computer translator
-			computerTranslatorChoices = [table.displayName for table in brailleTables.listTables() if table.computerBraille]
+			self.computerTranslatorChoices = self.getComputerBrailleTranslatorsChoices()
 			self.computerBrailleTranslatorChoice =sHelper.addLabeledControl(
 				# Translators: Label for a dropdown to select the computer braille translator to use for the current language profile
 				_("Computer Braille Translator:"), wx.Choice,
-				choices=computerTranslatorChoices
+				choices=self.computerTranslatorChoices
 			)
 
 			# Literary translator
@@ -299,9 +304,10 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 				# Computer translator
 				try:
 					computerTranslator = config.conf["HumanwareBrailleTranslation"]["G0TranslatorChoice"]
-					computerTranslatorChoices = [table.displayName for table in brailleTables.listTables() if table.computerBraille]
+					self.computerBrailleTranslatorFiles = self.getComputerBrailleTranslatorsFiles()
+     
 					try:
-						index = computerTranslatorChoices.index(computerTranslator)
+						index = self.computerBrailleTranslatorFiles.index(computerTranslator)
 						self.computerBrailleTranslatorChoice.SetSelection(index)
 					except ValueError:
 						log.warning(f"Computer translator {computerTranslator} not in available choices")
@@ -409,6 +415,7 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 	def onCancel(self, evt):
 		"""Restore all settings to their initial values when dialog is canceled."""
 		log.debug("Dialog canceled, restoring initial settings")
+		
 		try:
 			# Restore synthesizer
 			if synthDriverHandler.getSynth().name != self.initialSettings["synthName"]:
@@ -495,10 +502,10 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 
 				# Save computer translator
 				if hasattr(self, "computerBrailleTranslatorChoice") and self.computerBrailleTranslatorChoice is not None and self.computerBrailleTranslatorChoice.GetSelection() != -1:
-					computerTranslatorChoices = [table.displayName for table in brailleTables.listTables() if table.computerBraille]
-					computerTranslator = computerTranslatorChoices[self.computerBrailleTranslatorChoice.GetSelection()]
-					log.debug(f"Setting computer translator to {computerTranslator}")
-					config.conf["HumanwareBrailleTranslation"]["G0TranslatorChoice"] = computerTranslator
+					computerTranslator = self.computerTranslatorChoices[self.computerBrailleTranslatorChoice.GetSelection()]
+					index = self.computerTranslatorChoices.index(computerTranslator)
+					computerTranslatorFile = self.computerBrailleTranslatorFiles[index]
+					config.conf["HumanwareBrailleTranslation"]["G0TranslatorChoice"] = computerTranslatorFile
 
 				# Save literary translator
 				if hasattr(self, "literaryBrailleTranslatorChoice") and self.literaryBrailleTranslatorChoice is not None and self.literaryBrailleTranslatorChoice.GetSelection() != -1:
@@ -669,6 +676,22 @@ class ConfigureLanguageProfileDialog(settingsDialogs.SettingsDialog):
 				log.error(f"Error restoring rate/pitch for synthesizer {synthName}: {e}", exc_info=True)
 
 		evt.Skip()
+  
+	def getComputerBrailleTranslatorsChoices(self):
+		"""Get the list of available computer braille translators."""
+		try:
+			return [table.displayName for table in brailleTables.listTables() if table.computerBraille]
+		except Exception as e:
+			log.error(f"Error retrieving computer braille translators: {e}", exc_info=True)
+			return []
+
+	def getComputerBrailleTranslatorsFiles(self): 
+		"""Get the list of available computer braille translator files."""
+		try:
+			return [table.fileName for table in brailleTables.listTables() if table.computerBraille]
+		except Exception as e:
+			log.error(f"Error retrieving computer braille translator files: {e}", exc_info=True)
+			return []
 
 
 class CustomProfilesDialog(ProfilesDialog):
@@ -775,7 +798,7 @@ class SelectLanguageProfileDialog(settingsDialogs.SettingsDialog):
 		evt.Skip()
 
 	def onOk(self, evt):
-		"""Handle OK button press to activate the selected profile."""
+		"""Handle OK button press to activate the selected profile."""		
 		selection = self.profileList.GetSelection()
 		if selection != -1:
 			profileName = self.profileNames[selection]
@@ -784,8 +807,9 @@ class SelectLanguageProfileDialog(settingsDialogs.SettingsDialog):
 			try:
 				config.conf.manualActivateProfile(profileName)
 				log.info(f"Successfully activated profile : {self.getProfileDisplay(profileName)}")
+
 			except Exception as e:
-				log.error(f"Error activating profile : {e}")
+				log.error(f"Error activating profile : {e}", exc_info=True)
 				gui.messageBox(
 					# Translators: Message displayed when there is an error activating the selected language profile
 					_("Error activating profile."),
@@ -806,21 +830,6 @@ _manageLanguageProfilesDialog = None
 _selectLanguageProfileDialog = None
 
 
-def _handleDialogDestroyBrailleUpdate(evt):
-	"""Handle dialog destroy event and update braille display.
-	
-	This helper function ensures that when a dialog closes, the braille display
-	is updated to show the currently focused object, preventing it from staying
-	stuck on the dialog button text.
-	
-	@param evt: The window destroy event
-	"""
-	evt.Skip()
-	# Update braille display to show the currently focused object
-	# after the dialog closes, preventing it from staying stuck on the dialog button
-	wx.CallAfter(braille.handler.handleGainFocus, api.getFocusObject())
-
-
 def openConfigureLanguageProfile():
 	"""Open the configure language profile dialog."""
 	log.info("Opening Configure Language profile")
@@ -828,9 +837,18 @@ def openConfigureLanguageProfile():
 
 
 def _onConfigureLanguageProfileDialogDestroy(evt):
+	"""Handle dialog destroy event - clear the dialog reference."""
 	global _configureLanguageProfileDialog
 	_configureLanguageProfileDialog = None
-	_handleDialogDestroyBrailleUpdate(evt)
+	evt.Skip()
+	# Explicitly restore NVDA focus tracking after dialog closes
+	# This is needed because the dialog was opened from a background thread
+	try:
+		focus = api.getDesktopObject().objectWithFocus()
+		if focus:
+			queueHandler.queueFunction(queueHandler.eventQueue, eventHandler.queueEvent, "gainFocus", focus)
+	except Exception as e:
+		log.error(f"Error restoring focus after dialog close: {e}", exc_info=True)
 
 
 def _openConfigureLanguageProfileMainThread():
@@ -856,11 +874,19 @@ def openManageLanguageProfiles():
 	log.info("Opening Manage Language profiles")
 	wx.CallAfter(_openManageLanguageProfilesMainThread)
 
-
 def _onManageLanguageProfilesDialogDestroy(evt):
+	"""Handle dialog destroy event - clear the dialog reference."""
 	global _manageLanguageProfilesDialog
 	_manageLanguageProfilesDialog = None
-	_handleDialogDestroyBrailleUpdate(evt)
+	evt.Skip()
+	# Explicitly restore NVDA focus tracking after dialog closes
+	# This is needed because the dialog was opened from a background thread
+	try:
+		focus = api.getDesktopObject().objectWithFocus()
+		if focus:
+			queueHandler.queueFunction(queueHandler.eventQueue, eventHandler.queueEvent, "gainFocus", focus)
+	except Exception as e:
+		log.error(f"Error restoring focus after dialog close: {e}", exc_info=True)
 
 
 def _openManageLanguageProfilesMainThread():
@@ -873,7 +899,7 @@ def _openManageLanguageProfilesMainThread():
 			_manageLanguageProfilesDialog.Raise()
 			_manageLanguageProfilesDialog.SetFocus()
 		else:
-			_manageLanguageProfilesDialog = CustomProfilesDialog(gui.mainFrame)
+			_manageLanguageProfilesDialog = CustomProfilesDialog(gui.mainFrame)			
 			_manageLanguageProfilesDialog.Bind(wx.EVT_WINDOW_DESTROY, _onManageLanguageProfilesDialogDestroy)
 			# Translators: Title of the Manage Language Profiles dialog
 			_manageLanguageProfilesDialog.SetTitle(_("Manage Language Profiles"))
@@ -887,11 +913,19 @@ def openSelectLanguageProfile():
 	log.info("Opening Select Language Profile")
 	wx.CallAfter(_openSelectLanguageProfileThread)
 
-
 def _onSelectLanguageProfileDialogDestroy(evt):
+	"""Handle dialog destroy event - clear the dialog reference."""
 	global _selectLanguageProfileDialog
 	_selectLanguageProfileDialog = None
-	_handleDialogDestroyBrailleUpdate(evt)
+	evt.Skip()
+	# Explicitly restore NVDA focus tracking after dialog closes
+	# This is needed because the dialog was opened from a background thread
+	try:
+		focus = api.getDesktopObject().objectWithFocus()
+		if focus:
+			queueHandler.queueFunction(queueHandler.eventQueue, eventHandler.queueEvent, "gainFocus", focus)
+	except Exception as e:
+		log.error(f"Error restoring focus after dialog close: {e}", exc_info=True)
 
 
 def _openSelectLanguageProfileThread():
@@ -900,7 +934,7 @@ def _openSelectLanguageProfileThread():
 	
 	gui.mainFrame.prePopup()
 	try:
-		_selectLanguageProfileDialog = SelectLanguageProfileDialog(gui.mainFrame)
+		_selectLanguageProfileDialog = SelectLanguageProfileDialog(gui.mainFrame)		
 		_selectLanguageProfileDialog.Bind(wx.EVT_WINDOW_DESTROY, _onSelectLanguageProfileDialogDestroy)
 		_selectLanguageProfileDialog.Show()
 	except settingsDialogs.SettingsDialog.MultiInstanceErrorWithDialog:

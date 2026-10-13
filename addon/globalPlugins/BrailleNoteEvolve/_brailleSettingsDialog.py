@@ -10,10 +10,12 @@ import api
 import braille
 import config
 from config.configFlags import ShowMessages
+import eventHandler
 import gui
 from gui.guiHelper import BoxSizerHelper
 from gui import settingsDialogs, nvdaControls
 from logHandler import log
+import queueHandler
 import wx
 
 addonHandler.initTranslation()
@@ -128,33 +130,39 @@ class BrailleSettingsDialog(settingsDialogs.SettingsDialog):
 
 def openBrailleSettings():
 	"""Open the braille settings dialog."""
+	log.info("Request to open braille settings dialog received")
 	wx.CallAfter(_openBrailleSettingsMainThread)
 
 
 _brailleSettingsDialog = None
 
-
 def _onBrailleSettingsDialogDestroy(evt):
+	"""Handle dialog destroy event - clear the dialog reference."""
 	global _brailleSettingsDialog
 	_brailleSettingsDialog = None
 	evt.Skip()
-	# Update braille display to show the currently focused object
-	# after the dialog closes, preventing it from staying stuck on the dialog button
-	wx.CallAfter(braille.handler.handleGainFocus, api.getFocusObject())
+	# Explicitly restore NVDA focus tracking after dialog closes
+	# This is needed because the dialog was opened from a background thread
+	try:
+		focus = api.getDesktopObject().objectWithFocus()
+		if focus:
+			queueHandler.queueFunction(queueHandler.eventQueue, eventHandler.queueEvent, "gainFocus", focus)
+	except Exception as e:
+		log.error(f"Error restoring focus after dialog close: {e}", exc_info=True)
 
 
 def _openBrailleSettingsMainThread():
 	"""This method runs in the main thread to safely open the Braille Settings dialog"""
 	global _brailleSettingsDialog
 	
+	# Check if dialog already exists BEFORE prePopup
+	if _brailleSettingsDialog is not None:
+		_brailleSettingsDialog.Raise()
+		_brailleSettingsDialog.SetFocus()
+		return
+	
+	gui.mainFrame.prePopup()
 	try:
-		# Check if dialog already exists
-		if _brailleSettingsDialog is not None:
-			_brailleSettingsDialog.Raise()
-			_brailleSettingsDialog.SetFocus()
-			return
-
-		gui.mainFrame.prePopup()
 		_brailleSettingsDialog = BrailleSettingsDialog(gui.mainFrame)
 		_brailleSettingsDialog.Bind(wx.EVT_WINDOW_DESTROY, _onBrailleSettingsDialogDestroy)
 		_brailleSettingsDialog.Show()

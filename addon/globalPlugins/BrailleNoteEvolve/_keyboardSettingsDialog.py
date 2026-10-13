@@ -5,12 +5,15 @@
 
 # Keyboard settings dialog module
 import addonHandler
+import api
 import config
 from config.configFlags import TypingEcho
+import eventHandler
 import gui
 from gui.guiHelper import BoxSizerHelper
 from gui import settingsDialogs
 from logHandler import log
+import queueHandler
 import wx
 
 addonHandler.initTranslation()
@@ -83,7 +86,7 @@ class KeyboardSettingsDialog(settingsDialogs.SettingsDialog):
 			log.error(f"Error initializing keyboard settings values: {e}", exc_info=True)
 
 	def onOk(self, evt):
-		"""Save all keyboard settings when dialog is confirmed."""
+		"""Save all keyboard settings when dialog is confirmed."""	
 		try:
 			# Save speak typed characters
 			config.conf["keyboard"]["speakTypedCharacters"] = (
@@ -110,21 +113,36 @@ class KeyboardSettingsDialog(settingsDialogs.SettingsDialog):
 
 def openKeyboardSettings():
 	"""Open the keyboard settings dialog."""
+	log.info("Request to open keyboard settings dialog received")
 	wx.CallAfter(_openKeyboardSettingsMainThread)
 
 
 _keyboardSettingsDialog = None
 
-
 def _onKeyboardSettingsDialogDestroy(evt):
+	"""Handle dialog destroy event - clear the dialog reference."""
 	global _keyboardSettingsDialog
 	_keyboardSettingsDialog = None
 	evt.Skip()
+	# Explicitly restore NVDA focus tracking after dialog closes
+	# This is needed because the dialog was opened from a background thread
+	try:
+		focus = api.getDesktopObject().objectWithFocus()
+		if focus:
+			queueHandler.queueFunction(queueHandler.eventQueue, eventHandler.queueEvent, "gainFocus", focus)
+	except Exception as e:
+		log.error(f"Error restoring focus after dialog close: {e}", exc_info=True)
 
 
 def _openKeyboardSettingsMainThread():
 	"""This method runs in the main thread to safely open the Keyboard Settings dialog"""
 	global _keyboardSettingsDialog
+	
+	# Check if dialog already exists BEFORE prePopup
+	if _keyboardSettingsDialog is not None:
+		_keyboardSettingsDialog.Raise()
+		_keyboardSettingsDialog.SetFocus()
+		return
 	
 	gui.mainFrame.prePopup()
 	try:
