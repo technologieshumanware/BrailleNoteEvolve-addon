@@ -1,0 +1,226 @@
+# UNTRANSLATED STRINGS FOR NVDA ADDON
+# Language: es
+# Generated: 2026-04-21 10:54:55
+#
+# Please translate the msgstr lines and use import-translations.py
+# to merge them back into the main .po file.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.9\n"
+
+#. Translators: label to inform user that BrailleNoteEvolve addon could not be loaded correctly
+#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:73
+msgid "BrailleNote evolve Add-on could not be loaded correctly."
+msgstr "No se ha podido cargar correctamente el complemento BrailleNote evolve"
+
+#. Translators: dialog title when announcing an error for BrailleNoteEvolve addon
+#: braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\brailleNoteEvolve.py:75
+msgid "BrailleNote evolve Error"
+msgstr "Error en BrailleNote evolve"
+
+#. Translators: Label for a checkbox to toggle whether the braille display cursor is shown
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:72
+msgid "&Show cursor"
+msgstr "&Mostrar cursor"
+
+#. Translators: Label for the button to configure triggers
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:683
+msgid "&Triggers..."
+msgstr "&Desencadenadores..."
+
+#. Translators: The default profile name for a language profile when no profile is currently active
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:78
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:733
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:943
+msgid "(normal configuration)"
+msgstr "(configuración normal)"
+
+#. Translators: Title of the Braille Settings dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:19
+msgid "Braille Settings"
+msgstr "Opciones de Braille"
+
+#. Translators: Summary for this add-on
+#. to be shown on installation and add-on information found in Add-ons Manager.
+#: ..\braillenoteevolve\buildVars.py:23
+msgid "BrailleNote evolve for NVDA"
+msgstr "BrailleNote evolve para NVDA"
+
+#. Translators: Grade type choice for Computer Braille
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:34
+msgid "Computer Braille"
+msgstr "Braille computerizado"
+
+#. Translators: Label for a dropdown to select the computer braille translator to use for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:200
+msgid "Computer Braille Translator:"
+msgstr "Transcriptor para braille computerizado:"
+
+#. Translators: Title of the Configure Language Profile dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:65
+msgid "Configure Language Profile"
+msgstr "Configurar perfil de idioma"
+
+#. Translators: Title of the Configure Language Profile dialog when a profile name can be displayed
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:80
+#, python-brace-format
+msgid "Configure Language Profile - {}"
+msgstr "Configurar perfil de idioma - {}"
+
+#. Translators: General error dialog title
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:788
+msgid "Error"
+msgstr "Error"
+
+#. Translators: Message displayed when there is an error activating the selected language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:786
+msgid "Error activating profile."
+msgstr "Error al activar el perfil."
+
+#. Translators: Math code choice for French Braille
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:45
+msgid "FR"
+msgstr "FR"
+
+#. Translators: Long description to be shown for this add-on on add-on information from add-ons manager
+#: ..\braillenoteevolve\buildVars.py:26
+msgid "Integrates HumanWare BrailleNote evolve with NVDA, providing language "
+"profile management, braille and keyboard settings, and communication with "
+"the Keysoft Control Center."
+msgstr "Integra el BrailleNote Evolve con NVDA, proporcionando la administración del "
+"perfil de idioma, ajustes para braille y teclado y comunicación con el "
+"Centro de Control de KeySoft."
+
+#. Translators: Title of the Keyboard Settings dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_keyboardSettingsDialog.py:16
+msgid "Keyboard Settings"
+msgstr "Ajustes de teclado"
+
+#. Translators: Grade type choice for Literary Braille
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:36
+msgid "Literary Braille"
+msgstr "Braille literario"
+
+#. Translators: Label for a dropdown to select the literary braille translator to use for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:217
+msgid "Literary Braille Translator:"
+msgstr "Transcriptor para braille literario:"
+
+#. Translators: Title of the Manage Language Profiles dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:874
+msgid "Manage Language Profiles"
+msgstr "Gestionar perfiles de idioma"
+
+#. Translators: Label for a spin control to set how many seconds messages should be shown on the braille display before disappearing
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:58
+msgid "Message &timeout (sec)"
+msgstr "Mensaje y tiempo de espera (s)"
+
+#. Translators: Math code choice for Nemeth Braille
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:41
+msgid "Nemeth"
+msgstr "Nemeth"
+
+#. Translators: Title of the New Language Profile dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:718
+msgid "New Language Profile"
+msgstr "Nuevo perfil de idioma"
+
+#. Translators: Label for a slider to adjust the voice pitch for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:171
+msgid "Pitch:"
+msgstr "Tono:"
+
+#. Translators: Label for a dropdown to select the preferred braille grade for display in the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:192
+msgid "Preferred Braille Grade for Display:"
+msgstr "Grado braille preferido para la salida:"
+
+#. Translators: Label for a dropdown to select the preferred braille grade for entry in the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:185
+msgid "Preferred Braille Grade for Entry:"
+msgstr "Grado braille preferido para la entrada:"
+
+#. Translators: Label for a dropdown to select the preferred braille code for math for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:230
+msgid "Preferred Braille Type for Math:"
+msgstr "Tipo de braille preferido para matemáticas:"
+
+#. Translators: Label for a slider to adjust the speech rate for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:162
+msgid "Rate:"
+msgstr "Velocidad:"
+
+#. Translators: Title of the Select Language Profile dialog
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:727
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:745
+msgid "Select Language Profile"
+msgstr "Seleccionar perfil de idioma"
+
+#. Translators: Label for a dropdown to select when NVDA should show messages on the braille display
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:32
+msgid "Show messages"
+msgstr "Mostrar mensajes"
+
+#. Translators: Label for a dropdown to select whether the braille display should show selection
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_brailleSettingsDialog.py:83
+msgid "Show se&lection"
+msgstr "Mostrar se&lección"
+
+#. Translators: Label for a checkbox to toggle whether NVDA should speak command keys
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_keyboardSettingsDialog.py:49
+msgid "Speak c&ommand keys"
+msgstr "Anunciar teclas de c&omando"
+
+#. Translators: Label for a dropdown to select whether NVDA should speak typed characters
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_keyboardSettingsDialog.py:30
+msgid "Speak typed &characters:"
+msgstr "Eco de escritura &caracteres:"
+
+#. Translators: Label for a dropdown to select whether NVDA should speak typed words
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_keyboardSettingsDialog.py:40
+msgid "Speak typed &words:"
+msgstr "Eco de escritura &palabras:"
+
+#. Translators: Label for a dropdown to select the speech synthesizer to use for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:142
+msgid "Synthesizer:"
+msgstr "Sintetizador:"
+
+#. Translators: Label for the checkbox to temporarily disable all triggers
+#. The "&" indicates that the next character is a keyboard accelerator
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:691
+msgid "Temporarily d&isable all triggers"
+msgstr "Des&habilitar temporalmente todos los desencadenadores"
+
+#. Translators: Math code choice for Unified English Braille (UEB)
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:43
+msgid "UEB"
+msgstr "UEB"
+
+#. Translators: Label for a dropdown to select the voice variant to use for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:155
+msgid "Variant:"
+msgstr "Variante:"
+
+#. Translators: Label for a dropdown to select the voice to use for the current language profile
+#: ..\braillenoteevolve\addon\globalPlugins\BrailleNoteEvolve\_languageProfileDialog.py:149
+msgid "Voice:"
+msgstr "Voz:"
